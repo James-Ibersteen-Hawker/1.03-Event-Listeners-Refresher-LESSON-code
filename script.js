@@ -1,35 +1,49 @@
-// Helper function: replaces content inside #out
-function render (html) {
-  document.getElementById('out').innerHTML = html
+function render(html) {
+  document.getElementById("out").innerHTML = html;
 }
-
-/* -------------------------------
-   Demo 1: Click (counter)
--------------------------------- */
-let clickCount = 0
-
-
-/* --------------------------------------
-   Demo 2: Double-click (toggle highlight)
---------------------------------------- */
-
-
-/* --------------------------------
-   Demo 3: Keypress (show key/code)
---------------------------------- */
-
-
-/* ----------------------------------------
-   Demo 4: Show Time (12-hour format + day)
------------------------------------------ */
-
-
-/* -------------------------
-   Utility: Clear output
--------------------------- */
-document.getElementById('btnClear').addEventListener('click', () => {
-  render('<span class="text-secondary">Output cleared.</span>')
-})
+let clickCount = 0;
+document.querySelector("#btnClick").addEventListener("click", () => {
+  render(`<p>You have clicked ${++clickCount} times.</p>`);
+});
+document.querySelector("#dblCard").addEventListener(
+  "dblclick",
+  () => {
+    let target = document.querySelector("#dblCard");
+    target.classList.toggle("activated");
+    render(`<p>${target.classList.contains("activated") ? "ON" : "OFF"}</p>`);
+  },
+  true
+);
+let keyList = [];
+window.addEventListener("keyup", ({ key, code }) => {
+  const [kbK, kbC] = Array.from(document.querySelectorAll(".kb-value"));
+  keyList.push(` ${key} : ${code},`);
+  (kbK.textContent = key === " " ? "(space)" : key), (kbC.textContent = code);
+  const blob = new Blob([...keyList], { type: "text/plain" });
+  const url = URL.createObjectURL(blob);
+  document.querySelector("#downLoader").href = url;
+  document.querySelector("#downLoader").download = "clicksRecord.txt";
+});
+document.getElementById("btnClear").addEventListener("click", () => {
+  render(
+    '<span class="text-secondary">Output cleared, clicksRecord.txt cleared.</span>'
+  );
+  clickCount = 0;
+});
+function scrollUpdate() {
+  const percent =
+    (window.scrollY + window.innerHeight) /
+    document.documentElement.scrollHeight;
+  document.querySelector(".percent").textContent = `${Math.round(
+    percent * 100
+  )}%`;
+  document
+    .querySelector(".inner")
+    .setAttribute("style", `width: ${Math.round(percent * 100)}%`);
+}
+window.onload = scrollUpdate();
+window.addEventListener("scroll", scrollUpdate);
+window.addEventListener("resize", scrollUpdate);
 
 /* =================================================
    🔥 Event Listeners Challenge (Pick ONE to complete)
@@ -47,6 +61,7 @@ document.getElementById('btnClear').addEventListener('click', () => {
      (current scroll position ÷ total scrollable height)
    - Update the width of the bar with that percentage
    - Run this function when the page loads and on every scroll event
+   //did this one
 
    Option C — Live Input Mirror
    - Add a text input element to the page
